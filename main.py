@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from utils.database import engine
 import utils.models as models
+from routes import training
+
 
 app = FastAPI(
     title="Training Management API",
@@ -29,3 +31,6 @@ def heath_check():
 
 
 models.Base.metadata.create_all(bind=engine)
+
+
+app.include_router(training.router)
