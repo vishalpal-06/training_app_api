@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 import pandas as pd
 from utils.models import TrainingTest, Training
-from utils.database import get_db 
+from .auth import get_current_employee,get_db
 from schemas.training_test import TrainingTestOut
 
 router = APIRouter(prefix="/training_mcq_question", tags=["Training MCQ Question"])
@@ -12,7 +12,8 @@ router = APIRouter(prefix="/training_mcq_question", tags=["Training MCQ Question
 async def upload_training_test_excel(
     file: UploadFile = File(...),
     training_id: int = Form(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    employee:Session = Depends(get_current_employee)
 ):
     # Validate training_id
     training = db.query(Training).filter(Training.training_id == training_id).first()
@@ -52,7 +53,7 @@ async def upload_training_test_excel(
 
 
 @router.delete("/delete-mcqs/{training_id}")
-def delete_mcqs_by_training_id(training_id: int, db: Session = Depends(get_db)):
+def delete_mcqs_by_training_id(training_id: int, db: Session = Depends(get_db), employee:Session = Depends(get_current_employee)):
     # Check if training exists
     training = db.query(Training).filter(Training.training_id == training_id).first()
     if not training:
@@ -68,7 +69,7 @@ def delete_mcqs_by_training_id(training_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/questions/{training_id}", response_model=List[TrainingTestOut])
-def get_questions_by_training_id(training_id: int, db: Session = Depends(get_db)):
+def get_questions_by_training_id(training_id: int, db: Session = Depends(get_db), employee:Session = Depends(get_current_employee)):
     # Optional: Check if training exists
     training = db.query(Training).filter(Training.training_id == training_id).first()
     if not training:

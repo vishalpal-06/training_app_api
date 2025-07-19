@@ -1,14 +1,14 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from utils.models import Answer, TrainingTest
-from utils.database import get_db
+from .auth import get_db,get_current_employee
 from schemas.training_test import AnswerCreate, AnswerOut
 from typing import List
 
 router = APIRouter(prefix="/exam-QA", tags=["Training MCQ QA"])
 
 @router.post("/answers/", response_model=AnswerOut)
-def submit_answer(answer_data: AnswerCreate, db: Session = Depends(get_db)):
+def submit_answer(answer_data: AnswerCreate, db: Session = Depends(get_db), employee:Session = Depends(get_current_employee)):
     # Check if the question exists
     question = db.query(TrainingTest).filter(TrainingTest.question_id == answer_data.question_id).first()
     if not question:
@@ -31,7 +31,7 @@ def submit_answer(answer_data: AnswerCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/answers/{training_id}/{employee_id}", response_model=List[AnswerOut])
-def get_answers_by_training_and_employee(training_id: int, employee_id: int, db: Session = Depends(get_db)):
+def get_answers_by_training_and_employee(training_id: int, employee_id: int, db: Session = Depends(get_db), employee:Session = Depends(get_current_employee)):
     # Get all question_ids for the training
     questions = db.query(TrainingTest.question_id).filter(TrainingTest.training_id == training_id).all()
     question_ids = [q.question_id for q in questions]

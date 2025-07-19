@@ -32,7 +32,8 @@ employee_data = [
         emp['team_id'],
         emp['grade_id'],
         emp['discontinued'],
-        emp['password']
+        emp['password'],
+        emp['training_team']
     ) for emp in employees
 ]
 
@@ -40,8 +41,8 @@ employee_data = [
 insert_query = '''
     INSERT INTO employee (
         employee_id, employee_no, employee_name, emailid,
-        manager_id, team_id, grade_id, discontinued, password
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        manager_id, team_id, grade_id, discontinued, password, training_team
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 '''
 
 print(employee_data)

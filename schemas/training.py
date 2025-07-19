@@ -13,7 +13,6 @@ class TrainingBase(BaseModel):
     exam_inprogress: Optional[bool] = False         # changed from str to bool
     traing_logo_bs64: Optional[bytes] = None
 
-
 class TrainingCreate(TrainingBase):
     pass
 

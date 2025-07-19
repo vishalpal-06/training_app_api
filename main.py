@@ -6,7 +6,8 @@ from routes import (
     training, 
     training_registration,
     exam_question,
-    exam_answer
+    exam_answer,
+    auth
 )
 
 app = FastAPI(
@@ -41,3 +42,4 @@ app.include_router(training.router)
 app.include_router(training_registration.router)
 app.include_router(exam_question.router)
 app.include_router(exam_answer.router)
+app.include_router(auth.router)

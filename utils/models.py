@@ -18,6 +18,7 @@ class Employee(Base):
     grade_id = Column(Integer, nullable=True)
     discontinued = Column(Boolean, default=False, nullable=False)
     password = Column(String(100), nullable=True)
+    training_team = Column(Boolean, default=False, nullable=False)
 
     registrations = relationship("TrainingRegistration", back_populates="employee")
     answers = relationship("Answer", back_populates="employee")
