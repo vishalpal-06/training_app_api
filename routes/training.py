@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from utils.database import get_db  # You need this function to get DB session
 from utils import models
-from schemas.schemas import TrainingCreate, TrainingUpdate, TrainingOut
+from schemas.training import TrainingCreate, TrainingUpdate, TrainingOut
 from typing import List
 
 router = APIRouter(
@@ -42,7 +42,7 @@ def update_training(training_id: int, updated_data: TrainingUpdate, db: Session 
     if not training:
         raise HTTPException(status_code=404, detail="Training not found")
     
-    for key, value in updated_data.dict().items():
+    for key, value in updated_data.dict(exclude_unset=True).items():
         setattr(training, key, value)
     
     db.commit()

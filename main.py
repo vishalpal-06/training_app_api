@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from utils.database import engine
 import utils.models as models
-from routes import training
+from routes import training, training_registration
 
 
 app = FastAPI(
@@ -34,3 +34,4 @@ models.Base.metadata.create_all(bind=engine)
 
 
 app.include_router(training.router)
+app.include_router(training_registration.router)

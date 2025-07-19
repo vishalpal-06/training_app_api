@@ -1,0 +1,48 @@
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
+from typing import List
+from utils.database import get_db
+from utils.models import TrainingRegistration
+from schemas.training_registeration import TrainingRegistrationCreate, TrainingRegistrationUpdate, TrainingRegistrationOut
+
+router = APIRouter(prefix="/training-registration", tags=["Training Registration"])
+
+
+# Create registration
+@router.post("/", response_model=TrainingRegistrationOut)
+def create_registration(registration_data: TrainingRegistrationCreate, db: Session = Depends(get_db)):
+    registration = TrainingRegistration(**registration_data.dict())
+    db.add(registration)
+    db.commit()
+    db.refresh(registration)
+    return registration
+
+
+# Update registration
+@router.put("/{registration_id}", response_model=TrainingRegistrationOut)
+def update_registration(registration_id: int, updated_data: TrainingRegistrationUpdate, db: Session = Depends(get_db)):
+    registration = db.query(TrainingRegistration).filter(TrainingRegistration.registration_id == registration_id).first()
+    if not registration:
+        raise HTTPException(status_code=404, detail="Registration not found")
+
+    for key, value in updated_data.dict(exclude_unset=True).items():
+        setattr(registration, key, value)
+
+    db.commit()
+    db.refresh(registration)
+    return registration
+
+
+# Get single registration by ID
+@router.get("/{registration_id}", response_model=TrainingRegistrationOut)
+def get_registration(registration_id: int, db: Session = Depends(get_db)):
+    registration = db.query(TrainingRegistration).filter(TrainingRegistration.registration_id == registration_id).first()
+    if not registration:
+        raise HTTPException(status_code=404, detail="Registration not found")
+    return registration
+
+
+# Get all registrations
+@router.get("/", response_model=List[TrainingRegistrationOut])
+def get_all_registrations(db: Session = Depends(get_db)):
+    return db.query(TrainingRegistration).all()

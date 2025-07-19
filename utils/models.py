@@ -30,11 +30,11 @@ class Training(Base):
     trainer = Column(String(50), nullable=False)
     topic = Column(String(255), nullable=False)
     training_datetime = Column(DateTime, nullable=False)
-    traing_logo_bs64 = Column(LargeBinary, nullable=True)
+    traing_logo_bs64 = Column(LargeBinary, nullable=True)  # Accepts image bytes
     description = Column(Text, nullable=True)
     training_completed = Column(Boolean, default=False, nullable=True)
-    reason = Column(String(1000), nullable=True)
-    exam_status = Column(String(20), default='upcoming', nullable=True)
+    training_reschule_reason = Column(String(1000), nullable=True)  # Renamed
+    exam_inprogress = Column(Boolean, default=False, nullable=False)  # Changed from string to boolean
 
     registrations = relationship("TrainingRegistration", back_populates="training")
     tests = relationship("TrainingTest", back_populates="training")
