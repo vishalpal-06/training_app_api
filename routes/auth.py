@@ -85,6 +85,7 @@ async def login_employee(form_data: Annotated[OAuth2PasswordRequestForm, Depends
             "employee_id": employee.employee_id,
             "emailid": employee.emailid,
             "employee_name": employee.employee_name,
-            "training_team": employee.training_team
+            "training_team": employee.training_team,
+            "manager_id": employee.manager_id,
         }
     }

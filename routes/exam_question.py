@@ -5,6 +5,7 @@ import pandas as pd
 from utils.models import TrainingTest, Training
 from .auth import get_current_employee,get_db
 from schemas.training_test import TrainingTestOut
+from io import BytesIO
 
 router = APIRouter(prefix="/training_mcq_question", tags=["Training MCQ Question"])
 
@@ -22,7 +23,9 @@ async def upload_training_test_excel(
 
     # Read Excel file
     try:
-        df = pd.read_excel(file.file)
+        # df = pd.read_excel(file.file)
+        contents = await file.read()  # Read all file contents
+        df = pd.read_excel(BytesIO(contents))
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error reading Excel file: {str(e)}")
 
