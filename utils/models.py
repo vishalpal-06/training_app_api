@@ -1,8 +1,9 @@
 from sqlalchemy import (
-    Column, Integer, String, Boolean, DateTime, ForeignKey, Text, LargeBinary
+    Column, Integer, String, Boolean, DateTime, ForeignKey, Text, LargeBinary, exists
 )
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
+from sqlalchemy.ext.hybrid import hybrid_property
 
 Base = declarative_base()
 
@@ -22,6 +23,16 @@ class Employee(Base):
 
     registrations = relationship("TrainingRegistration", back_populates="employee")
     answers = relationship("Answer", back_populates="employee")
+
+    @hybrid_property
+    def is_manager(self):
+        # Check in Python runtime context
+        return any(emp.manager_id == self.employee_id for emp in self._sa_instance_state.session.query(Employee).all())
+
+    @is_manager.expression
+    def is_manager(cls):
+        # Check in SQL context for query filtering
+        return exists().where(Employee.manager_id == cls.employee_id)
 
 
 class Training(Base):
